@@ -3,18 +3,22 @@
 name = ["apache2"]
 action= ["install", "enable", "start"]
 
+# Service restart for the apache instance based on any needs 
 [service.ops]
 name = ["apache2"]
 action =["restart"]
 
+# firewall setup for the apache to allow http port 80 traffic 
 [firewall.setup]
 name = ["Apache"]
 action=["allow"]
 
+#setup php lib for the apache
 [service.setup_php]
 name=["php", "libapache2-mod-php"]
 action=["install"]
 
+#create a file for the index.php to include the customazation and restart apache 
 [file.conf]
 name = ["/var/www/html/index.php"]
 action = ["create"]
@@ -23,6 +27,7 @@ content  = ["""<?php\n header("Content-Type: text/plain");\n echo "Hello, world!
 params = {'owner'= 'root','group'= 'root','mode' = '0755'}
 notifies = "@format {this.service.ops}"
 
+#create a file for the apache to change the directory to point to index.php and restart apache
 [file.phpindex]
 name=['/etc/apache2/mods-enabled/dir.conf']
 action=["create"]
