@@ -1,0 +1,32 @@
+# Service setup for the apache instance
+[service.setup]
+name = ["apache2"]
+action= ["install", "enable", "start"]
+
+[service.ops]
+name = ["apache2"]
+action =["restart"]
+
+[firewall.setup]
+name = ["Apache"]
+action=["allow"]
+
+[service.setup_php]
+name=["php", "libapache2-mod-php"]
+action=["install"]
+
+[file.conf]
+name = ["/var/www/html/index.php"]
+action = ["create"]
+override="true"
+content  = ["""<?php\n header("Content-Type: text/plain");\n echo "Hello, world!\n";\n"""]
+params = {'owner'= 'root','group'= 'root','mode' = '0755'}
+notifies = "@format {this.service.ops}"
+
+[file.phpindex]
+name=['/etc/apache2/mods-enabled/dir.conf']
+action=["create"]
+override="true"
+content= ["""<IfModule mod_dir.c>\n DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm </IfModule>"""]
+params = {'owner'= 'root','group'= 'root','mode' = '0755'}
+notifies= "@format {this.service.ops}"
