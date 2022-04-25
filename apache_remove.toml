@@ -1,0 +1,8 @@
+[service.setup]
+name = ["apache2"]
+action= ["stop", "disable", "remove"]
+
+
+[service.setup_php]
+name=["php", "libapache2-mod-php"]
+action=["remove"]
